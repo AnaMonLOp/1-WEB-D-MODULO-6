@@ -1,0 +1,34 @@
+<> es un fragment, para su desarrollo
+
+Define un contador, y el que lo manipulará 
+
+.map regresa un arreglo de párrafos
+
+ REACT -> redibuja partes que han cambiado en el DOM
+
+////////////////////////////////////////////7
+EJEMPLO
+main.js -> <Ejemplo list={[1, 2, 3, 4, 5, 6]} dummy={"cadena"} miParametro={true} />
+
+Ejemplo.jsx ->
+functionEjemplo(objProps){
+
+}
+
+Desestructuración 
+    const obj = {
+        at1: "x",
+        at2: "y"
+    }
+
+    const { at2, at1 } = obj;
+
+
+{/* alt + shift + a == comentariooo */}
+
+//////////////////////////////////////////
+Tailwindcss!
+1. -> npm install tailwindcss @tailwindcss/vite
+2 -> vite.config.js -> import tailwindcss from '@tailwindcss/vite'
+                        plugins: [react(), tailwindcss()],
+3. -> index.css -> @import "tailwindcss";
