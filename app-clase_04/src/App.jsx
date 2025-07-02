@@ -1,6 +1,4 @@
-/* import { useState, useEffect } from 'react' */
-import './App.css'
-import { Timer } from './components/Timer'
+import { TweetCard } from './components/TweetCard'
 
 function App() {
 
@@ -16,7 +14,7 @@ function App() {
 
   return (
     <>
-      <Timer />
+      <TweetCard name="Ronan Monroy" usuario="ronanMonroy123" contenido="Empezando la nueva serie de Netflix!! #juegoDelCalamar" />
     </>
   )
 }
