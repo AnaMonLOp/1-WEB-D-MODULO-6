@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { UserAvatar } from "./UserAvatar";
@@ -52,10 +53,16 @@ export const TweetCard = memo(({ tweet, onLike, onRetweet, onReplie, onViewDetai
       onClick={() => onViewDetail(tweet.id)}
     >
       <div className="flex gap-3">
-        <UserAvatar avatar={tweet.avatar} size="md" alt={`${tweet.user} avatar`} />
+        <UserAvatar avatar={tweet.avatar} size="md" alt={`${tweet.user} avatar`} /> 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-bold hover:underline">@{tweet.user}</span>
+            <Link 
+              to={`/profile/${tweet.user}`} 
+              className="font-bold hover:underline"
+              onClick={(e) => e.stopPropagation()}
+              >
+              @{tweet.user}
+            </Link>
             <span className="text-gray-500 text-sm">
               {new Date(tweet.timestamp).toLocaleString()} {/* fecha/hora formateada */}
             </span>

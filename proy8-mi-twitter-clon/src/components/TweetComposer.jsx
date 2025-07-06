@@ -1,7 +1,7 @@
 import {useState, useRef, useEffect, useCallback} from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { UserAvatar } from "./UserAvatar";
+import { UserAvatar } from '../components/UserAvatar';
 
 export const TweetComposer = ({ onTweet }) => {
   const [text, setText] = useState('');

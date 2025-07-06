@@ -10,15 +10,18 @@ import { UserAvatar } from "../components/UserAvatar";
 export default function Profile() {
   const { username } = useParams();
   const navigate = useNavigate();
+  const { updateUser} = useAuth();
   const { user: currentUser } = useAuth();
   const isOwnProfile = currentUser?.username === username;
   const [userTweets, setUserTweets] = useState([]);
   const [profileData, setProfileData] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
 
   useEffect(() => {
     //Obtener tweets del usuario
+    setProfileData(null);
     const allTweets = JSON.parse(localStorage.getItem("tweets")) || [];
     const userSpecificTweets = allTweets.filter(
       (t) => t.user === username
@@ -30,30 +33,68 @@ export default function Profile() {
     setProfileData(userFound || null);
   }, [username]);
 
+  useEffect(() => {
+    if (!currentUser || !profileData) return;
+    setIsFollowing(currentUser.following?.includes(username));
+  }, [currentUser, profileData, username]);
+
   if(!profileData){
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Perfil no encontrado</p>
+        Cargando perfil ...
       </div>
     );
   }
 
-  const handleSaveProfile = (updateUser) => {
+  const handleFollowToggle = () => {
     const allUsers = JSON.parse(localStorage.getItem("users")) || [];
-    const updateUsers = allUsers.map((u) =>
-      u.username === updateUser.username ? updateUser : u
+
+    const updatedUsers = allUsers.map((userObj) => {
+      if (userObj.username === currentUser.username) {
+        // yo: actualizo siguiendo
+        const followingSet = new Set(userObj.following || []);
+        isFollowing ? followingSet.delete(username) : followingSet.add(username);
+        return { ...userObj, following: Array.from(followingSet) };
+      }
+      if (userObj.username === username) {
+        // el perfil visitado: actualizo seguidores
+        const followersSet = new Set(userObj.followers || []);
+        isFollowing ? followersSet.delete(currentUser.username) : followersSet.add(currentUser.username);
+        return { ...userObj, followers: Array.from(followersSet) };
+      }
+      return userObj;
+    });
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+    // Actualiza localmente
+    const updatedProfile = updatedUsers.find(u => u.username === username);
+    const updatedCurrent = updatedUsers.find(u => u.username === currentUser.username);
+
+    setProfileData(updatedProfile);
+    updateUser(updatedCurrent); // desde AuthContext
+    setIsFollowing(!isFollowing);
+  };
+
+
+  const handleSaveProfile = (updatedProfile) => {
+    const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const updatedUsers = allUsers.map((u) =>
+      u.username === updatedProfile.username ? updatedProfile : u
     );
-    localStorage.setItem("users", JSON.stringify(updateUsers));
-    localStorage.setItem("currentUser", JSON.stringify(updateUser));
-    setProfileData(updateUser);
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem("currentUser", JSON.stringify(updatedProfile));
+    setProfileData(updatedProfile);
 
     const allTweets = JSON.parse(localStorage.getItem("tweets")) || [];
     const updatedTweets = allTweets.map((t) =>
-      t.user === updateUser.username ? { ...t, avatar: updateUser.avatar } : t
+      t.user === updatedProfile.username ? { ...t, avatar: updatedProfile.avatar } : t
     );
     localStorage.setItem("tweets", JSON.stringify(updatedTweets));
-    setUserTweets(updatedTweets.filter((t) => t.user === updateUser.username));
+    setUserTweets(updatedTweets.filter((t) => t.user === updatedProfile.username));
+    updateUser(updatedProfile);
   };
+
 
   const { avatar, bio, joinedAt } = profileData;
 
@@ -84,11 +125,11 @@ export default function Profile() {
                   <span className="text-gray-600">Tweets</span>
                 </span>
                 <span>
-                  <strong></strong>{' '}
+                  <strong>{profileData.following?.length || 0}</strong>{' '}
                   <span className="text-gray-600">Siguiendo</span>
                 </span>
                 <span>
-                  <strong></strong>{' '}
+                  <strong>{profileData.followers?.length || 0}</strong>{' '}
                   <span className="text-gray-600">Seguidores</span>
                 </span>
               </div>
@@ -108,6 +149,18 @@ export default function Profile() {
                       onSave={handleSaveProfile}
                     />
                   </>
+                )}
+                {!isOwnProfile && (
+                  <button
+                    onClick={handleFollowToggle}
+                    className={`mt-4 px-6 py-2 rounded-full font-semibold ${
+                      isFollowing
+                        ? "bg-white border border-blue-500 text-blue-500 hover:bg-blue-50"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
+                  >
+                    {isFollowing ? "Siguiendo" : "Seguir"}
+                  </button>
                 )}
             </div>
           </div>
@@ -129,6 +182,7 @@ export default function Profile() {
               tweet={tweet}
               onLike={() => {}}
               onRetweet={() => {}}
+              onReplie={() => {}}
               onViewDetail={() => {}}
             />
           ))

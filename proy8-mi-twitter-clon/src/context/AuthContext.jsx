@@ -9,6 +9,8 @@ function authReducer(state, action) {
       return { user: action.user, isAuthenticated: true };
     case 'LOGOUT':
       return { user: null, isAuthenticated: false };
+    case 'UPDATE_USER':
+      return {...state, user: action.user};
     default:
       return state; 
   }
@@ -65,6 +67,11 @@ export function AuthProvider({ children }){
     dispatch({ type: 'LOGOUT' })
   }, []);
 
+  const updateUser = useCallback((updateUser) => {
+    localStorage.setItem("currentUser", JSON.stringify(updateUser));
+    dispatch({ type: 'UPDATE_USER', user: updateUser});
+  }, []);
+
   // Mantener sesión si recargan la página
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -76,7 +83,7 @@ export function AuthProvider({ children }){
 
   // ⚠️ BEST PRACTICE: Memoizar el value si fuera un objeto con refs grandes.
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
