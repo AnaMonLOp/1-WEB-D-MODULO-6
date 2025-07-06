@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { UserAvatar } from "../components/UserAvatar";
+import { getTweets } from "../utils/storage";
 
 export default function PostDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const tweet = getTweets().find(t => t.id.toString() === id);
 
-    const allTweets = JSON.parse(localStorage.getItem("tweets")) || [];
-    const tweet = allTweets.find((t) => t.id.toString() === id);
 
     if (!tweet) {
         return (

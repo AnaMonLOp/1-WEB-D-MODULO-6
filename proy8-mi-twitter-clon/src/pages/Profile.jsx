@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { TweetCard } from '../components/TweetCard';
 import { EditProfileModal } from "../components/EditProfileModal";
 import { UserAvatar } from "../components/UserAvatar";
-
+import { getUsers, saveUsers, getTweets, saveTweets, saveCurrentUser} from '../utils/storage'
 
 export default function Profile() {
   const { username } = useParams();
@@ -22,13 +22,13 @@ export default function Profile() {
   useEffect(() => {
     //Obtener tweets del usuario
     setProfileData(null);
-    const allTweets = JSON.parse(localStorage.getItem("tweets")) || [];
+    const allTweets = getTweets();
     const userSpecificTweets = allTweets.filter(
       (t) => t.user === username
     );
     setUserTweets(userSpecificTweets);
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = getUsers();
     const userFound = users.find(u => u.username === username);
     setProfileData(userFound || null);
   }, [username]);
@@ -47,7 +47,7 @@ export default function Profile() {
   }
 
   const handleFollowToggle = () => {
-    const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const allUsers = getUsers();
 
     const updatedUsers = allUsers.map((userObj) => {
       if (userObj.username === currentUser.username) {
@@ -65,7 +65,7 @@ export default function Profile() {
       return userObj;
     });
 
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    saveUsers(updatedUsers);
 
     // Actualiza localmente
     const updatedProfile = updatedUsers.find(u => u.username === username);
@@ -78,19 +78,19 @@ export default function Profile() {
 
 
   const handleSaveProfile = (updatedProfile) => {
-    const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const allUsers = getUsers();
     const updatedUsers = allUsers.map((u) =>
       u.username === updatedProfile.username ? updatedProfile : u
     );
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("currentUser", JSON.stringify(updatedProfile));
+    saveUsers(updatedUsers);
+    saveCurrentUser(updatedProfile);
     setProfileData(updatedProfile);
 
-    const allTweets = JSON.parse(localStorage.getItem("tweets")) || [];
+    const allTweets = getTweets();
     const updatedTweets = allTweets.map((t) =>
       t.user === updatedProfile.username ? { ...t, avatar: updatedProfile.avatar } : t
     );
-    localStorage.setItem("tweets", JSON.stringify(updatedTweets));
+    saveTweets(updatedTweets);
     setUserTweets(updatedTweets.filter((t) => t.user === updatedProfile.username));
     updateUser(updatedProfile);
   };

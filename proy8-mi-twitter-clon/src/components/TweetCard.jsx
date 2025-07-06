@@ -3,7 +3,6 @@ import { useState, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { UserAvatar } from "./UserAvatar";
 
-
 export const TweetCard = memo(({ tweet, onLike, onRetweet, onReplie, onViewDetail }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isRetweeted, setIsRetweeted] = useState(false);

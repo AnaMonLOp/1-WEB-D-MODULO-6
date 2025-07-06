@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import {TweetComposer} from '../components/TweetComposer';
 import {TweetFeed} from '../components/TweetFeed';
+import { getTweets, saveTweets } from '../utils/storage'; 
+import { updateTweetMetric } from '../utils/tweetUtils';
 
 
 export default function Home () {
@@ -31,30 +33,25 @@ export default function Home () {
       replies: 5,
     }
   ];
+
   const getInitialTweets = () => {
-    try {
-      const stored = localStorage.getItem('tweets');
-      return stored ? JSON.parse(stored) : defaultTweets;
-    } catch(e) {
-      console.error('Error al leer tweets del localStorage:', e);
-      return defaultTweets;
-    }
-  };
+    const stored = getTweets();
+    return stored.length > 0 ? stored : defaultTweets;
+    };
 
   const [tweets, setTweets] = useState(getInitialTweets);
 
   //Cada vez que tweets cambie, se actualiza el localStorage  
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('tweets') || '[]');
+    const stored = getTweets();
     if (JSON.stringify(tweets) !== JSON.stringify(stored)){
-      localStorage.setItem('tweets', JSON.stringify(tweets));
+      saveTweets(tweets);
     }
   }, [tweets]);
 
   useEffect(() => {
     const syncTweets = () => {
-      const stored = JSON.parse(localStorage.getItem('tweets') || '[]');
-      setTweets(stored);
+      setTweets(getTweets());
     };
     window.addEventListener('storage', syncTweets);
     return () => window.removeEventListener('storage', syncTweets);
@@ -83,39 +80,18 @@ export default function Home () {
       navigate(`/tweet/${id}`);
   }, [navigate]);
 
-  const handleLike = useCallback((id, isLiking) => {
-    setTweets((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, likes: Math.max(0, t.likes + (isLiking ? 1 : -1)) } : t
-      )
-    );
-  }, []);
-
-  const handleRetweet = useCallback((id, isRetweeting) => {
-    setTweets((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, retweets: Math.max(0, t.retweets + (isRetweeting ? 1 : -1)) } : t
-      )
-    );
-  }, []);
-
-  const handleReplie = useCallback((id, isReplie) => {
-    setTweets((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, replies: Math.max(0, t.replies + (isReplie ? 1: -1))} : t
-      )
-    );
-  }, []);
-
+  const handleTweetMetric = (field) => (id, isActive) => {
+    setTweets(prev => updateTweetMetric(prev, id, field, isActive));
+  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-2xl">
       <TweetComposer onTweet={publishTweet} />
       <TweetFeed
         tweets={tweets}
-        onLike={handleLike}
-        onRetweet={handleRetweet}
-        onReplie={handleReplie}
+        onLike={handleTweetMetric("likes")}
+        onRetweet={handleTweetMetric("retweets")}
+        onReplie={handleTweetMetric("replies")}
         onViewDetail={handleViewDetail}
       />
     </motion.div>

@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer, useCallback, useEffect } from "react";
+import { getUsers, saveUsers, saveCurrentUser, getCurrentUser} from '../utils/storage';
 
 const AuthContext = createContext(null);
 
@@ -25,7 +26,7 @@ export function AuthProvider({ children }){
 
   // useCallback -> la identidad de la función sólo cambia cuando cambie dispatch.
   const login = useCallback((username, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = getUsers();
     const existingUser = users.find((u) => u.username === username);
 
     // Si el usuario no existe, se registra uno nuevo
@@ -39,22 +40,23 @@ export function AuthProvider({ children }){
         following: [],
         joinedAt: new Date().toISOString(),
       };
-      const updateUsers = [...users, newUser];
-      localStorage.setItem("users", JSON.stringify(updateUsers));
-      localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+      const updatedUsers = [...users, newUser];
+      saveUsers(updatedUsers);
+      saveCurrentUser(newUser);
       dispatch({ type: 'LOGIN', user: newUser });
       return {success: true, isNew: true};
     }
 
     // Si existe usuario se verifica contraseña
     if (existingUser.password === password){
-      localStorage.setItem("currentUser", JSON.stringify(existingUser));
+      saveCurrentUser(existingUser);
       dispatch({type: 'LOGIN', user: existingUser});
       return {success: true, isNew: false};
     }
 
     
-  if(!username || password){
+  if(!username || !password){
     return {success: false, error: "Faltan datos de inico de sesión. "};
   }
     // Contraseña incorrecta
@@ -68,13 +70,13 @@ export function AuthProvider({ children }){
   }, []);
 
   const updateUser = useCallback((updateUser) => {
-    localStorage.setItem("currentUser", JSON.stringify(updateUser));
+    saveCurrentUser(updateUser);
     dispatch({ type: 'UPDATE_USER', user: updateUser});
   }, []);
 
   // Mantener sesión si recargan la página
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+    const storedUser = getCurrentUser();
     if(storedUser){
       dispatch({type:"LOGIN", user:storedUser});
     }

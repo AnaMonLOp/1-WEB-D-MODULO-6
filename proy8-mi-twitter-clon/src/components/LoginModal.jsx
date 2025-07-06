@@ -19,7 +19,8 @@ export function LoginModal ({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  const handleLogin = () =>{
+  const handleLogin = (e) =>{
+    e.preventDefault();
     if(!username.trim() || !password.trim()){
       setError("Usuario y contraseña requeridos.");
       return;
@@ -54,41 +55,45 @@ export function LoginModal ({ isOpen, onClose }) {
         onClick={(e) => e.stopPropagation()} // evita cerrar al hacer click dentro
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h2>
-        <input
-          ref={inputRef}
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Ingresa tu nombre de usuario"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleLogin(e)} /* Realiza la acción si presionamos Enter */
-          placeholder="Ingresa tu contraseña de usuario"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4"
-        />
-        {error && (<p className="text-red-500 text-sm mb-2 text-center">{error}</p>)}
+        <form onSubmit={handleLogin}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Ingresa tu nombre de usuario"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4"
+            aria-label="Nombre de usuario"
+            autoComplete="username"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Ingresa tu contraseña de usuario"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4"
+            aria-label="Contraseña"
+            autoComplete="current-password"
+          />
+          {error && (<p className="text-red-500 text-sm mb-2 text-center">{error}</p>)}
 
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={handleLogin}
-            disabled={!password.trim()}
-            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            Entrar
-          </button>
-        </div>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={!password.trim()}
+              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              Entrar
+            </button>
+          </div>
+        </form>
       </motion.div>
     </motion.div>
   );

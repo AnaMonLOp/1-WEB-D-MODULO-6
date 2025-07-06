@@ -35,9 +35,20 @@ export const TweetComposer = ({ onTweet }) => {
       animate={{ opacity: 1, y: 0 }}
     >
       <div className="flex gap-3">
-        <div className="text-3xl">
+        <motion.div
+          animate={{
+            scale: text ? [1, 1.1, 1] : 1,
+            rotate: text ? [0, 3, -3, 0] : 0
+          }}
+          transition={{
+            duration: 0.6,
+            repeat: text ? Infinity : 0,
+            repeatDelay: 1,
+            ease: "easeInOut"
+          }}
+        >
           <UserAvatar avatar={user.avatar} size="lg" alt={`${user.username} avatar`} />
-        </div>
+        </motion.div>
         <div className="flex-1">
           <textarea
             ref={inputRef}
