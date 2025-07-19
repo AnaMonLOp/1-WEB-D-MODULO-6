@@ -32,3 +32,196 @@ export default App
 
 //////////////////////////////////////////
 Comando para ver el historial de comandos : history
+
+//////////////////////////////////////////
+react-router-documentacion
+1. CONSOLA -> npm i react-router-dom
+2. Creamos un archivo llamado "route.ts"
+** Checar bien el programa routes de la clase 7
+
+
+CLASE DE DEVF 
+1. En nuestro proyecto ->  npm install react-router-dom
+2. Asegurarte envolver nuestra aplicación con BrowserRouter
+   en el main.jsx :
+  
+  import { BrowserRouter } from 'react-router-dom';
+  
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+
+
+
+/ / / / / / / / / / / / / / / / / // / / / // / / / / /
+/// N O T A S 
+✨ Semana 1
+* Comprendamos React en lo basico
+* Entender el uso básico de JSX
+* Manejo de estados y propiedades
+* Entender el concepto Hook
+
+✨ Semana 2
+* UseEffect
+* Manejo de dependencias
+* UseMemo
+* Montaje, actualizacion y desmontaje
+
+✨ Semana 3
+* Esructuras condicionales conn JSX 
+* Usamos operadores logicos y switch
+* props. children
+* Reutilizacion de componentes
+* useRef
+* Manejo de estados complejos con UseRducer
+
+✨ Semana 4 (React -SPA)
+* react-router-dom
+* consolidar el uso de hooks, rutas
+
+🟪              🟪              🟪                🟪              🟪
+🌟 Clase 1
+es.react.dev -> documentacion de react
+HTML -> Lenguaje de Marcado de Hipertexto (labels)
+XML -> ? -> lenguaje de marcado extensible, 
+JSX -> Es un lenguaje extendido a nuestras necesidades y con html
+{/* alt + shift + a == comentariooo */}
+
+🟪              🟪              🟪                🟪              🟪
+🌟 Clase 2
+
+hook -> Es una funcion pero "especial"
+- Debe importarse 
+- Tiene el nivel más alto de los componentes, idealmente en el principio de las funciones
+devuelve la variable y el metodo para poder cambiar el valor de la variable. 
+- Es programacion estrictamente funcional, y desestructura una función 
+- Todo se maneja a traves de constantes 
+
+Al utilizar el hook en react describe lo que debe de ocurrir, y hace que la variable elegida 
+esté en el ojo a los cambios
+
+*** la tag como minuscula lo reconoce como una etiqueta html, por eso ponemos en mayuscula los nombres 
+de las funciones.
+
+🖥️                    🖥️                      🖥️                         🖥️
+
+porque se usa el callback ? { ( ) = ... }
+porque recibe un callback el onclick? 
+Un callback es una funcion que se pasa como parametro para ejecutarse en cualquier momento, 
+no se sabe cuando se va a ejecutar!!
+
+🖥️                    🖥️                      🖥️                         🖥️
+LF y CRLF
+
+* props son cuando una funcion recibe las propiedades cuyo proposito es cambiar el html (el nombre y rol)
+ y esto se tiene que cambiar directamnte en la funcion de padre, no en la de hijo por que es de un nivel 
+ más bajo. Son inmutables
+  const Perfil = ({nombre, rol})
+
+REGLAS:
+1. Si el dato llega desde el componente padre, no va a cambiar ahí. Usa props.
+2. Si el dato cambia dentro del mismo componente (p. ej. si está haciendo un contador 
+    o es un modal abierto o cerrado), usa state (useState, que ayuda a engachar)
+
+
+🟪              🟪              🟪                🟪              🟪
+🌟 Clase 3
+-useEffect: Definir de que depende el efecto secundario
+-useMemo: evita renderizados innecesarios
+
+--> Vida del componente (ciclo de vida)
+
+* useEffect sirve para decirle a React que haga algo después de que tu componente se
+  muestre en la pantalla (o cuando cambie algo específico)
+
+* Montar un componente? : se refiere a la primera vez que aparece en pantalla
+* Cuando ponemos [] -> significa "solo ejecútalo cuando el componente aparece, y no más.
+* ¿Qué es render? -> Un render ocurre cada vez que:
+                      - se actualiza un estado (useState)
+                      - cambia las props
+                      - o React dceide que el componente debe actualizarse
+
+* useMemo permite memorizar el resultado de una función costosa, es decir, evitar 
+  que se vuelva a ejecutar si no es necesario.
+  Puede filtrar una lista con un input, y también hace que la lista no se vuelva a filtrar
+  cada vez que el componente se vuelve a renderizar, a menos que el filtro o la lista cambien 
+
+
+🟪              🟪              🟪                🟪              🟪
+
+
+🌟 Clase 4
+POO en base a un carro 🚗
+⭐ atributos  (color, llantas, modelo...)-> ¿Qué es? y ¿Cómo es?
+⭐ metodos (acelerar, frenar, girar ...) -> ¿Qué puede hacer? y ¿Que puedo hacer con el?
+
+Component funcionales
+⭐ props -> son como los atributos (nombre, label, color, tamaño, borde, data-id=..)
+⭐ estado -> es cómo se encuentra, cómo podemos pasar de un estado a otro (presionado, me soltaron)
+
+
+Ciclo de vida 🔁
+1ra etapa --> montaje
+2da etapa --> actualización
+3ra etapa --> desmontaje
+
+--> StrictMode = En su desarrollo monta, desmonta y vuelve a montar
+                  para asegurar que su comportamiento sea correcto
+
+🟪              🟪              🟪                🟪              🟪
+🌟 Clase 5
+* Estado se manipula en el componente
+* Las props se pasan a los componentes
+
+* Molde -> es ya un estilo hecho que se puede reutilizar
+* Cajón -> Algo que se requiere que sea diferente
+
+🟪              🟪              🟪                🟪              🟪
+🌟 Clase 6
+Callback -> una función que se pasa cómo parámetro a otra función
+
+✨ useRef -> Da seguimiento a los comportamientos de  los usuarios como el scroll, renderizados ...
+          Y podemos crear páginas con un diseño dinámico 
+
+
+Mientras el componente no se desmonte: 
+- La referencia prevalece
+- Es idependiente del renderizado (a diferencia del useState), por lo que
+  no genere un re-renderizado
+- Con useState no podríar hacer referencia directa a un elemento 
+
+-> {currente: valor}
+- Como afecta el renderizado, es ideal tambien para guardar valores 
+   "cambiantes" auxiliares
+
+🌟 Casos de uso del Ref:
+- Foco o Selección de algun elemento del DOM en determinado momento (p. ej 
+   Montaje de un componente)
+- Contador (no visible) o alguna metrica interna del aplicativo.
+- Identificador importante que quiera tener presente
+- Integración con API (enlaces, endpoints).
+- Evitar Re-renders innecesarios (p. ej. Tracking de la scrollbar)
+
+🟪              🟪              🟪                🟪              🟪
+
+🌟 Clase 7
+input.focus -> Hace que el elemento <input> obtenga el foco del teclado, es decir, el cursor
+aparece dentro del campo listo para que el usuario escriba.
+
+input.select -> Selecciona todo el texto que haya dentro del input. Es como si el usuario 
+hiciera doble clic en el texto para marcarlo todo.
+
+✨ layout es una plantilla que define las parte de la página 
+
+- Creamos una nueva carpeta para routes.ts, se llama Views
+
+🟪              🟪              🟪                🟪              🟪
+
+🌟 Clase 8
+app.jsx es el que se encarga de renderizar lo que se quiere mostrar
+main.jsx es la raíz del proyecto 
+
+- useContext se usa para poder pasar props entre componentes que no son padre-hijo
+- Framework es un conjunto de herramientos y estandariza el desarrollo de software.
